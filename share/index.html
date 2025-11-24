@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Dynamic meta tags - will be updated by JavaScript -->
+    <title>Check out my selfie with Cheez!</title>
+    <meta name="description" content="Cheez helps you take perfect selfies without pushing a button!">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cheezapp.top/share/">
+    <meta property="og:title" content="Check out my selfie with Cheez!">
+    <meta property="og:description" content="Cheez helps you take perfect selfies without pushing a button!">
+    <meta property="og:image" content="">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://cheezapp.top/share/">
+    <meta property="twitter:title" content="Check out my selfie with Cheez!">
+    <meta property="twitter:description" content="Cheez helps you take perfect selfies without pushing a button!">
+    <meta property="twitter:image" content="">
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧀</text></svg>">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #FFFFFF;
+            color: #2C3E50;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #FFD54F;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Error State */
+        .error {
+            text-align: center;
+            padding: 60px 20px;
+            display: none;
+        }
+
+        .error h2 {
+            color: #E74C3C;
+            margin-bottom: 10px;
+        }
+
+        /* Content */
+        .content {
+            display: none;
+            text-align: center;
+        }
+
+        .content.show {
+            display: block;
+        }
+
+        /* Selfie Image */
+        .selfie-container {
+            width: 100%;
+            margin-bottom: 30px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .selfie-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Score Headline */
+        .headline {
+            font-size: 2em;
+            font-weight: 700;
+            color: #2C3E50;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .score {
+            color: #FFD54F;
+            font-weight: 800;
+        }
+
+        /* Cheese emoji */
+        .cheese-emoji {
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        /* Subheadline */
+        .subheadline {
+            font-size: 1.1em;
+            color: #7F8C8D;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        /* App Store Button */
+        .app-store-button {
+            display: inline-block;
+            margin-bottom: 40px;
+            transition: transform 0.2s ease;
+        }
+
+        .app-store-button:hover {
+            transform: scale(1.05);
+        }
+
+        .app-store-button img {
+            height: 50px;
+            width: auto;
+        }
+
+        /* Fallback text button if image fails */
+        .download-btn {
+            display: inline-block;
+            background-color: #000000;
+            color: white;
+            padding: 15px 40px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: background-color 0.2s ease;
+        }
+
+        .download-btn:hover {
+            background-color: #333333;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #ECF0F1;
+            text-align: center;
+            color: #95A5A6;
+            font-size: 0.9em;
+        }
+
+        .footer-logo {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .headline {
+                font-size: 1.5em;
+            }
+
+            .subheadline {
+                font-size: 1em;
+            }
+
+            body {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading State -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Loading selfie...</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="error" id="error">
+        <h2>Oops!</h2>
+        <p id="errorMessage">This selfie could not be found.</p>
+        <p style="margin-top: 20px;">
+            <a href="https://apps.apple.com/il/app/cheez-selfies/id6742335221" class="download-btn">
+                Download Cheez
+            </a>
+        </p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container content" id="content">
+        <!-- Selfie Image -->
+        <div class="selfie-container">
+            <img id="selfieImage" class="selfie-image" alt="Selfie" />
+        </div>
+
+        <!-- Headline with Score -->
+        <h1 class="headline">
+            <span class="cheese-emoji">🧀</span>
+            I scored <span class="score" id="scoreValue">0.0</span> with Cheez!
+        </h1>
+
+        <!-- Subheadline -->
+        <p class="subheadline">
+            Cheez helps you take perfect selfies without pushing a button!
+        </p>
+
+        <!-- App Store Button -->
+        <a href="https://apps.apple.com/il/app/cheez-selfies/id6742335221" class="app-store-button" target="_blank" rel="noopener">
+            <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1234567890" alt="Download on the App Store">
+        </a>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-logo">🧀</div>
+            <p>Powered by Cheez App</p>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC-EHA_vLFG4ww0oRSk1t4njTbIcljvknI",
+            projectId: "cheezpromocodes",
+            storageBucket: "cheezpromocodes.firebasestorage.app",
+            appId: "1:600736919855:ios:fd8755ec5b5468a78d71da"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Get share ID from URL
+        function getShareIdFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const idParam = urlParams.get('id');
+
+            if (idParam) {
+                return idParam;
+            }
+
+            // Try path-based format: /share/abc123
+            const pathSegments = window.location.pathname.split('/');
+            if (pathSegments.length >= 3 && pathSegments[1] === 'share') {
+                return pathSegments[2];
+            }
+
+            return null;
+        }
+
+        // Update meta tags for social sharing
+        function updateMetaTags(shareData) {
+            const score = shareData.qualityScore.toFixed(1);
+            const title = `I scored ${score} with Cheez!`;
+            const description = "Cheez helps you take perfect selfies without pushing a button!";
+            const imageUrl = shareData.imageUrl;
+            const pageUrl = window.location.href;
+
+            // Update page title
+            document.title = title;
+
+            // Update Open Graph meta tags
+            document.querySelector('meta[property="og:title"]').setAttribute('content', title);
+            document.querySelector('meta[property="og:description"]').setAttribute('content', description);
+            document.querySelector('meta[property="og:image"]').setAttribute('content', imageUrl);
+            document.querySelector('meta[property="og:url"]').setAttribute('content', pageUrl);
+
+            // Update Twitter meta tags
+            document.querySelector('meta[property="twitter:title"]').setAttribute('content', title);
+            document.querySelector('meta[property="twitter:description"]').setAttribute('content', description);
+            document.querySelector('meta[property="twitter:image"]').setAttribute('content', imageUrl);
+            document.querySelector('meta[property="twitter:url"]').setAttribute('content', pageUrl);
+        }
+
+        // Load and display share data
+        async function loadShare() {
+            const shareId = getShareIdFromURL();
+
+            if (!shareId) {
+                showError('This selfie could not be found.');
+                return;
+            }
+
+            try {
+                const shareDoc = await db.collection('shares').doc(shareId).get();
+
+                if (!shareDoc.exists) {
+                    showError('This selfie could not be found.');
+                    return;
+                }
+
+                const shareData = shareDoc.data();
+
+                // Check if share has expired
+                if (shareData.expiresAt) {
+                    const expiresAt = shareData.expiresAt.toDate();
+                    const now = new Date();
+
+                    if (now > expiresAt) {
+                        showError('This link has expired. Shared selfies are only available for 14 days.');
+                        return;
+                    }
+                }
+
+                // Update UI
+                document.getElementById('selfieImage').src = shareData.imageUrl;
+                document.getElementById('scoreValue').textContent = shareData.qualityScore.toFixed(1);
+
+                // Update meta tags
+                updateMetaTags(shareData);
+
+                // Show content, hide loading
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').classList.add('show');
+
+                // Track page view (optional analytics)
+                console.log('Share viewed:', shareId);
+
+            } catch (error) {
+                console.error('Error loading share:', error);
+                showError('Unable to load this selfie. Please try again later.');
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('errorMessage').textContent = message || 'This selfie could not be found.';
+            document.getElementById('error').style.display = 'block';
+        }
+
+        // Load share on page load
+        loadShare();
+    </script>
+</body>
+</html>
